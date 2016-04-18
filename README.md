@@ -1,6 +1,6 @@
 # City-Distance-Calculator
 
-This script uses a city/state CSV file to calculate the distance between any 2 cities in the United State via Haversine formula.
+This script uses a city/state database to list all cities within 20 miles of a chosen city in the United State via Haversine formula.
 
 The current setup is as a DIY example as a self-teaching exercise, though you can bypass this by just loading my prepared database located at Assets/locations.sql into a 'locations' database with 'geocode' table.
 I used table 'geocode' with columns: state char(2) as primary key, city varchar(255), lati double(9,6), longi double(9,6).
