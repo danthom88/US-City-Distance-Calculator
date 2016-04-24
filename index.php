@@ -26,7 +26,7 @@ function Haversine( $lat1, $lon1, $lat2, $lon2, $city, $state)
 
 $servername = "localhost";
 $username = "root";
-$password = "90876dtDT"; //ENTER YOUR PASSWORD
+$password = "devpass"; //ENTER YOUR PASSWORD
 $dbname = "locations";
 $city = $_GET['city'];
 $state = $_GET['state'];

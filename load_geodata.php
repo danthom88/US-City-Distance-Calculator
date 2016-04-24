@@ -4,11 +4,9 @@ unset($data[0]); // first index are headers
 
 $db = new PDO('mysql:host=localhost;dbname=locations',
             'root',
-<<<<<<< HEAD
-            '90876dtDT'); // PUT IN YOUR PASSWORD
-=======
-            'password'); // PUT IN YOUR PASSWORD
->>>>>>> a10bf8161f6ccc84dfc1b6299dcfd3004955c2d0
+
+            'devpass'); // PUT IN YOUR PASSWORD
+
 
 $sql = "INSERT INTO geocode (state, city, lati, longi)
         VALUES (:state, :city, :lati, :longi)";
