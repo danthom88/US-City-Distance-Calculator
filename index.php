@@ -1,8 +1,9 @@
 <?php
-// Get Distance between two lat/lng points using the Haversine function
-// First published by Roger Sinnott in Sky & Telescope magazine in 1984 (“Virtues of the Haversine”)
-//
-$setlocations = false;
+//Make sure information was passed along.
+
+$response = array();
+
+$combine = array();
 function Haversine( $lat1, $lon1, $lat2, $lon2, $city, $state) 
 {
     $R = 6372.8;	// Radius of the Earth in Km
@@ -19,37 +20,25 @@ function Haversine( $lat1, $lon1, $lat2, $lon2, $city, $state)
 	// Distance in Kilometers
     $distance = round(0.6214*$d ,0);
 	
-	if ($distance <= 20) {
-		echo "<br>" . $city . ", " . $state . " is " . $distance . " away from selected city.";
-	}
+	return $distance;
 }
 
-if(ISSET($_POST["city1"]) && ISSET($_POST["state1"])) {
-$setlocations = true;
-}
-?>
 
-<html>
-<head><title>Testing distances calculation</title></head>
-<body>
-
-<?php
-if ($setlocations){
 $servername = "localhost";
 $username = "root";
-$password = "password"; //ENTER YOUR PASSWORD
+$password = "90876dtDT"; //ENTER YOUR PASSWORD
 $dbname = "locations";
-$city1 = $_POST["city1"];
-$state1 = $_POST["state1"];
+$city = $_GET['city'];
+$state = $_GET['state'];
 
 
 $conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-	die("Connection failed: " .$conn->connect_error);
-}
+    if ($conn->connect_error) {
+        die("Connection failed: " .$conn->connect_error);
+    }
 
-$sql = "SELECT lati, longi FROM geocode WHERE city='$city1' AND state='$state1' LIMIT 1";
-$sql2 = "SELECT state, city, lati, longi FROM geocode WHERE state='$state1'";
+$sql = "SELECT lati, longi FROM geocode WHERE city='$city' AND state='$state' LIMIT 1";
+$sql2 = "SELECT state, city, lati, longi FROM geocode WHERE state='$state'";
 $result1 = $conn->query($sql);
 $result2 = $conn->query($sql2);
 
@@ -57,39 +46,34 @@ $pulled_lat1;
 $pulled_lat2;
 $pulled_long1;
 $pulled_long2;
-$returnedisbroken=false;
 
-if ($result1->num_rows >0) {
-	while($row = $result1->fetch_assoc()) {
-		$pulled_lat1 = $row["lati"];
-		$pulled_long1 = $row["longi"];
-		echo "Selecting cities within 20 miles of select city.";
-	}
-}
-else {$returnedisbroken=true;}
+    if ($result1->num_rows >0) {
+        
+        //Getting cordinates of original city/state
+        while($row = $result1->fetch_assoc()) {
+            $pulled_lat1 = $row["lati"];
+            $pulled_long1 = $row["longi"];
+        }
+        //Run distance function on all cities of same state
+         while ($row = $result2->fetch_assoc()) {
 
-while ($row = $result2->fetch_assoc()) {
-	
-		Haversine($pulled_lat1, $pulled_long1, $row['lati'], $row['longi'], $row['city'], $row['state']);
-	
-}
+            $distance = Haversine($pulled_lat1, $pulled_long1, $row['lati'], $row['longi'], $row['city'], $row['state']);
+            
+             if ($distance <= $_GET['distance']) {
+                 $combine = array (
+                 'city' => $row['city'],
+                 'state' => $row['state'],
+                 'distance' => $distance);
+                 array_push ($response, $combine);
+             }
 
-if ($returnedisbroken) {
-	echo 'No results!';
-}
-else {
-	
-}
+            
+    }    
+        echo json_encode($response);        
+    }
+    else {
+        echo 'City and State not found in the Database!';
+    }
 
-}
-
- // if field-data is set
-else {
-echo '<form action="index.php" method="post">';
-echo 'City <input type="textbox" name="city1"> State<input type="textbox" name="state1"><br>';
-echo '<input type="submit">';
-echo '</form>';
-}
+   
 ?>
-</body>
-</html>
