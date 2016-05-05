@@ -1,0 +1,63 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+</head>
+<body>
+<div id="errors"></div>
+
+<div id="fetch">
+City: <input type="text" id="city" class="required">
+State: <input type="text" id="state" class="required" maxlength="2" size="2">	
+Max distance: <input type="text" id="distance" class="required" maxlength="2" size="2">
+<button id="check" class="btn btn-primary">Find cities</button>
+
+</div>
+<div id="results"></div>
+
+<script>
+$( "#check" ).click(function() {
+	$('#results').empty();
+    if ( !$('.required').val() ) {
+     $('#errors').append("You forgot to enter some values!");
+    }
+    else{ 
+    	$('#errors').empty();
+        
+        var city = $('#city').val();
+        var state = $('#state').val();
+        var distance = parseInt($('#distance').val());
+
+    	var data = {
+   		city: city,
+    	state: state,
+    	distance: distance
+		};
+
+		$.getJSON("index.php", data, function (result) {
+    		$.each( result, function() {
+ 			$('#results').append( this['city'] + ", " + this['state'] + " is " + this['distance'] + " miles away.<br>");
+			});
+
+		});
+
+
+
+    }
+
+
+});
+
+</script>
+
+</body>
+</html>

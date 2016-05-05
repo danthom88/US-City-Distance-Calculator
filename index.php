@@ -69,7 +69,17 @@ $pulled_long2;
 
             
     }    
-        echo json_encode($response);        
+
+    $sortResponse = array();
+    foreach ($response as $key => $row)
+    {
+    $sortResponse[$key] = $row['distance'];
+    }
+    array_multisort($sortResponse, SORT_ASC, $response);
+
+    $response = json_encode($response);
+    echo $response;   
+
     }
     else {
         echo 'City and State not found in the Database!';
