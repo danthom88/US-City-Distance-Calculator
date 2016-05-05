@@ -13,51 +13,57 @@
 
 </head>
 <body>
-<div id="errors"></div>
+<div class="container-fluid">
+	<div id="errors"></div>
 
-<div id="fetch">
-City: <input type="text" id="city" class="required">
-State: <input type="text" id="state" class="required" maxlength="2" size="2">	
-Max distance: <input type="text" id="distance" class="required" maxlength="2" size="2">
-<button id="check" class="btn btn-primary">Find cities</button>
-
+	<div class="row">
+	<div class="col-xs-3"></div>
+		<div class="col-xs-6">
+			City: <input type="text" id="city" class="required">
+			State: <input type="text" id="state" class="required" maxlength="2" size="2">	
+			Max distance: <input type="text" id="distance" class="required" maxlength="2" size="2">
+			<button id="check" class="btn btn-primary">Find cities</button>
+			<div id="results"></div>
+			</div>
+	<div class="col-xs-3"></div>	
+		</div>
+	</div>
 </div>
-<div id="results"></div>
+	<script>
+	$( "#check" ).click(function() {
+		$('#results').empty();
+	    if ( !$('.required').val() ) {
+	     $('#errors').append("You forgot to enter some values!");
+	    }
+	    else{ 
+	    	$('#errors').empty();
+	        
+	        var city = $('#city').val();
+	        var state = $('#state').val();
+	        var distance = parseInt($('#distance').val());
 
-<script>
-$( "#check" ).click(function() {
-	$('#results').empty();
-    if ( !$('.required').val() ) {
-     $('#errors').append("You forgot to enter some values!");
-    }
-    else{ 
-    	$('#errors').empty();
-        
-        var city = $('#city').val();
-        var state = $('#state').val();
-        var distance = parseInt($('#distance').val());
+	    	var data = {
+	   		city: city,
+	    	state: state,
+	    	distance: distance
+			};
 
-    	var data = {
-   		city: city,
-    	state: state,
-    	distance: distance
-		};
+			$.getJSON("index.php", data, function (result) {
+	    		$.each( result, function() {
+	 			$('#results').append( this['city'] + ", " + this['state'] + " is " + this['distance'] + " miles away.<br>");
+				});
 
-		$.getJSON("index.php", data, function (result) {
-    		$.each( result, function() {
- 			$('#results').append( this['city'] + ", " + this['state'] + " is " + this['distance'] + " miles away.<br>");
 			});
 
-		});
 
 
+	    }
 
-    }
 
+	});
 
-});
+	</script>
 
-</script>
 
 </body>
 </html>
